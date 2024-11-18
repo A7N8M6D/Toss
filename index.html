@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اسکرولنگ نمبر</title>
+    <title>Lucky Number Draw</title>
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,27 +13,38 @@
             box-sizing: border-box;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background: #f3f4f6;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #ffec99, #ffcccb);
-            color: #333;
-            text-align: center;
+            margin: 0;
+            flex-direction: column;
         }
         .container {
-            width: 90%;
-            max-width: 600px;
-            padding: 20px;
-            background: #fff;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            background-color: #fff;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .scrolling-sections {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         .scrolling-numbers {
-            font-size: 3rem;
-            font-weight: bold;
-            height: 80px;
+            width: 100px;
+            height: 200px;
             margin: 20px auto;
             overflow: hidden;
             display: flex;
@@ -39,24 +52,45 @@
             align-items: center;
             border: 3px solid #007bff;
             border-radius: 10px;
-            background: #f9f9f9;
+            background-color: #f1f1f1;
+            position: relative;
+        }
+        .scrolling-numbers .digit {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transition: transform 0.1s ease-in-out;
+        }
+        .scrolling-numbers .digit span {
+            font-size: 3rem;
+            line-height: 80px;
+            display: block;
         }
         button {
-            margin: 10px;
-            padding: 15px 25px;
+            margin: 15px 0;
+            padding: 15px 30px;
             font-size: 1.2rem;
             cursor: pointer;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
-            transition: background 0.3s ease;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #0056b3;
         }
+        button:disabled {
+            background-color: #b0b0b0;
+            cursor: not-allowed;
+        }
         #luckyNumber {
             font-size: 1.5rem;
+            font-weight: bold;
             color: green;
             margin-top: 20px;
         }
@@ -75,15 +109,18 @@
         }
         .modal-content {
             background: #fff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 90%;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 80%;
             max-width: 400px;
             text-align: center;
+            position: relative;
         }
         .modal-content h2 {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
         }
         .modal-content input {
             width: 100%;
@@ -105,78 +142,166 @@
         .modal-content button:hover {
             background-color: #0056b3;
         }
+        .modal-content .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+        .modal-content .close-btn:hover {
+            color: #007bff;
+        }
+
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>اسکرولنگ نمبر</h1>
-        <div class="scrolling-numbers" id="scrollingNumbers">---</div>
-        <button onclick="openModal()">نمبر شامل کریں</button>
-        <button onclick="startScrolling()">شروع کریں</button>
-        <button onclick="stopScrolling()">روکیں</button>
+        <h1>Lucky Number Draw</h1>
+        <div class="scrolling-sections">
+            <!-- Three Scrolling Sections -->
+            <div class="scrolling-numbers" id="scrollingNumbers1">
+                <div class="digit" id="digit1">
+                    <!-- Empty placeholders for numbers 0-9 -->
+                    <span>0</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
+                </div>
+            </div>
+            <div class="scrolling-numbers" id="scrollingNumbers2">
+                <div class="digit" id="digit2">
+                    <!-- Empty placeholders for numbers 0-9 -->
+                    <span>0</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
+                </div>
+            </div>
+            <div class="scrolling-numbers" id="scrollingNumbers3">
+                <div class="digit" id="digit3">
+                    <!-- Empty placeholders for numbers 0-9 -->
+                    <span>0</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="openModal()">
+            <i class="fas fa-plus"></i> Enter Numbers
+        </button>
+        <button id="startButton" onclick="startScrolling()" disabled>
+            <i class="fas fa-play"></i> Start Scrolling
+        </button>
+        <button onclick="stopScrolling()">
+            <i class="fas fa-stop"></i> Stop Scrolling
+        </button>
+
         <div id="luckyNumber"></div>
     </div>
 
     <!-- Modal -->
     <div class="modal" id="numberModal">
         <div class="modal-content">
-            <h2>اپنے نمبر درج کریں</h2>
-            <input type="text" id="userNumbers" placeholder="123,456,789" />
-            <button onclick="saveNumbers()">محفوظ کریں</button>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2><i class="fas fa-keyboard"></i> Enter Your Numbers</h2>
+            <input type="text" id="userNumbers" placeholder="123, 456, 789" />
+            <button onclick="saveNumbers()">
+                <i class="fas fa-save"></i> Save Numbers
+            </button>
         </div>
     </div>
 
     <script>
         let numbers = [];
-        let intervalId;
-        let currentIndex = 0;
+        let intervalIds = [];
+        let currentIndices = [0, 0, 0];
+        let isScrolling = false;
 
+        // Open Modal to Enter Numbers
         function openModal() {
             document.getElementById("numberModal").style.display = "flex";
         }
 
+        // Close Modal
         function closeModal() {
             document.getElementById("numberModal").style.display = "none";
         }
 
+        // Save Numbers and Close Modal
         function saveNumbers() {
             const input = document.getElementById("userNumbers").value;
             numbers = input.split(',').map(num => num.trim()).filter(num => /^\d{3}$/.test(num));
+            
             if (numbers.length === 0) {
-                alert("براہ کرم درست تین ہندسوں والے نمبرز درج کریں۔");
+                alert("Please enter valid 3-digit numbers separated by commas.");
                 return;
             }
-            alert("نمبرز شامل ہو گئے ہیں۔");
+
+            document.getElementById("startButton").disabled = false;  // Enable the Start Button
             closeModal();
         }
 
+        // Start Scrolling
         function startScrolling() {
-            if (numbers.length === 0) {
-                alert("پہلے نمبر شامل کریں۔");
-                return;
+            if (isScrolling) return;
+
+            isScrolling = true;
+            intervalIds = [];
+
+            for (let i = 0; i < 3; i++) {
+                const display = document.getElementById(`digit${i + 1}`);
+                let currentIndex = 0;
+
+                const intervalId = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % 10;
+                    display.style.transform = `translateY(-${currentIndex * 80}px)`;
+                }, 100);
+
+                intervalIds.push(intervalId);
             }
-
-            const display = document.getElementById("scrollingNumbers");
-            clearInterval(intervalId);
-
-            intervalId = setInterval(() => {
-                display.textContent = numbers[currentIndex];
-                currentIndex = (currentIndex + 1) % numbers.length;
-            }, 100); // Scroll every 100ms
         }
 
+        // Stop Scrolling and Show Winner Number
         function stopScrolling() {
-            if (!intervalId) return;
+            if (!isScrolling) return;
 
-            clearInterval(intervalId);
-            intervalId = null;
+            isScrolling = false;
+            intervalIds.forEach(clearInterval);
 
-            // Select a random number
-            const randomIndex = Math.floor(Math.random() * numbers.length);
-            const luckyNumber = numbers[randomIndex];
-
-            // Display the winner
-            document.getElementById("luckyNumber").textContent = `لکی نمبر: ${luckyNumber}`;
+            // Choose a random winner number
+            const winnerNumber = numbers[Math.floor(Math.random() * numbers.length)];
+            document.getElementById("luckyNumber").innerText = `The Winner Number is: ${winnerNumber}`;
         }
     </script>
 </body>
