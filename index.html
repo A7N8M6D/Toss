@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اسکرولنگ نمبر</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            margin: 50px auto;
+            width: 300px;
+            text-align: center;
+        }
+        .scrolling-numbers {
+            font-size: 36px;
+            font-weight: bold;
+            height: 50px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #luckyNumber {
+            font-size: 24px;
+            color: green;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اسکرولنگ نمبر</h1>
+        <div class="scrolling-numbers" id="scrollingNumbers">---</div>
+        <button onclick="startScrolling()">شروع کریں</button>
+        <button onclick="stopScrolling()">روکیں</button>
+        <div id="luckyNumber"></div>
+    </div>
+
+    <script>
+        let numbers = [];
+        let intervalId;
+        let currentIndex = 0;
+
+        function takeNumbersFromUser() {
+            // Prompt user to enter numbers
+            const input = prompt("تین ہندسوں والے نمبرز کاما کے ساتھ درج کریں (مثلاً 123,456,789):");
+            if (input) {
+                numbers = input.split(',').map(num => num.trim()).filter(num => /^\d{3}$/.test(num));
+                if (numbers.length === 0) {
+                    alert("براہ کرم درست تین ہندسوں والے نمبرز درج کریں۔");
+                    return false;
+                }
+                alert("نمبرز شامل ہو گئے ہیں۔");
+                return true;
+            }
+            return false;
+        }
+
+        function startScrolling() {
+            if (numbers.length === 0) {
+                if (!takeNumbersFromUser()) return;
+            }
+
+            const display = document.getElementById("scrollingNumbers");
+            clearInterval(intervalId); // Clear any previous intervals
+
+            intervalId = setInterval(() => {
+                display.textContent = numbers[currentIndex];
+                currentIndex = (currentIndex + 1) % numbers.length;
+            }, 100); // Scroll every 100ms
+        }
+
+        function stopScrolling() {
+            if (!intervalId) return;
+
+            clearInterval(intervalId);
+            intervalId = null;
+
+            // Select a random number
+            const randomIndex = Math.floor(Math.random() * numbers.length);
+            const luckyNumber = numbers[randomIndex];
+
+            // Display the winner
+            document.getElementById("luckyNumber").textContent = `لکی نمبر: ${luckyNumber}`;
+        }
+    </script>
+</body>
+</html>
